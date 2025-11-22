@@ -14,7 +14,198 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      habit_completions: {
+        Row: {
+          completed_at: string | null
+          habit_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          habit_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          habit_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_completions_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "habit_completions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      habits: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          date: string
+          description: string | null
+          id: string
+          is_active: boolean | null
+          priority: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          date?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          date?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          priority?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insights: {
+        Row: {
+          created_at: string | null
+          data: Json | null
+          description: string
+          id: string
+          insight_type: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data?: Json | null
+          description: string
+          id?: string
+          insight_type: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json | null
+          description?: string
+          id?: string
+          insight_type?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insights_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          display_name: string | null
+          email: string | null
+          google_id: string | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          email?: string | null
+          google_id?: string | null
+          id: string
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          email?: string | null
+          google_id?: string | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      videos: {
+        Row: {
+          category_id: string | null
+          channel: string
+          created_at: string | null
+          duration: number | null
+          id: string
+          title: string
+          user_id: string
+          video_id: string
+          watched_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          channel: string
+          created_at?: string | null
+          duration?: number | null
+          id?: string
+          title: string
+          user_id: string
+          video_id: string
+          watched_at: string
+        }
+        Update: {
+          category_id?: string | null
+          channel?: string
+          created_at?: string | null
+          duration?: number | null
+          id?: string
+          title?: string
+          user_id?: string
+          video_id?: string
+          watched_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "videos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
