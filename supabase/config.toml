@@ -1,1 +1,10 @@
 project_id = "qqordcccgkjfplqassrh"
+
+[functions.sync-youtube-history]
+verify_jwt = true
+
+[functions.generate-insights]
+verify_jwt = true
+
+[functions.generate-habits]
+verify_jwt = true
