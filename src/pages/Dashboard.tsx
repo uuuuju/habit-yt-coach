@@ -15,6 +15,8 @@ const Dashboard = () => {
     totalVideos: 0,
     avgVideoLength: 0,
   });
+  const [weeklyData, setWeeklyData] = useState<Array<{ day: string; time: number }>>([]);
+  const [contentTypeData, setContentTypeData] = useState<Array<{ name: string; value: number }>>([]);
 
   useEffect(() => {
     loadDashboardData();
@@ -35,7 +37,7 @@ const Dashboard = () => {
         .eq('user_id', user.id)
         .gte('watched_at', sevenDaysAgo.toISOString());
 
-      if (videos) {
+      if (videos && videos.length > 0) {
         const today = new Date().toDateString();
         const todayVideos = videos.filter(v => new Date(v.watched_at).toDateString() === today);
         
@@ -47,6 +49,40 @@ const Dashboard = () => {
             ? videos.reduce((sum, v) => sum + (v.duration || 0), 0) / videos.length 
             : 0,
         });
+
+        // Calculate weekly data by day
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const dailyStats = new Map<number, number>();
+        
+        videos.forEach(video => {
+          const date = new Date(video.watched_at);
+          const dayIndex = date.getDay();
+          const currentTime = dailyStats.get(dayIndex) || 0;
+          dailyStats.set(dayIndex, currentTime + (video.duration || 0));
+        });
+
+        const weeklyChartData = Array.from({ length: 7 }, (_, i) => {
+          const dayIndex = (new Date().getDay() - 6 + i + 7) % 7;
+          return {
+            day: dayNames[dayIndex],
+            time: Math.round((dailyStats.get(dayIndex) || 0) / 60) // Convert to minutes
+          };
+        });
+        setWeeklyData(weeklyChartData);
+
+        // Calculate content distribution based on video duration
+        const shortVideos = videos.filter(v => (v.duration || 0) < 60).reduce((sum, v) => sum + (v.duration || 0), 0);
+        const mediumVideos = videos.filter(v => (v.duration || 0) >= 60 && (v.duration || 0) < 600).reduce((sum, v) => sum + (v.duration || 0), 0);
+        const longVideos = videos.filter(v => (v.duration || 0) >= 600).reduce((sum, v) => sum + (v.duration || 0), 0);
+        
+        const totalDuration = shortVideos + mediumVideos + longVideos;
+        if (totalDuration > 0) {
+          setContentTypeData([
+            { name: 'Shorts (<1m)', value: Math.round((shortVideos / totalDuration) * 100) },
+            { name: 'Medium (1-10m)', value: Math.round((mediumVideos / totalDuration) * 100) },
+            { name: 'Long (>10m)', value: Math.round((longVideos / totalDuration) * 100) },
+          ]);
+        }
       }
     } catch (error) {
       console.error('Error loading dashboard:', error);
@@ -61,22 +97,6 @@ const Dashboard = () => {
     return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
   };
 
-  // Mock data for charts (will be replaced with real data)
-  const weeklyData = [
-    { day: 'Mon', time: 45 },
-    { day: 'Tue', time: 60 },
-    { day: 'Wed', time: 30 },
-    { day: 'Thu', time: 75 },
-    { day: 'Fri', time: 90 },
-    { day: 'Sat', time: 120 },
-    { day: 'Sun', time: 105 },
-  ];
-
-  const contentTypeData = [
-    { name: 'Entertainment', value: 45 },
-    { name: 'Educational', value: 30 },
-    { name: 'Shorts', value: 25 },
-  ];
 
   if (loading) {
     return (
