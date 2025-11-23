@@ -71,3 +71,5 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+- https://docs.lovable.dev/tips-tricks/self-hosting DB Migration as Supabase was not connected with Lovable Ref: https://github.com/orgs/supabase/discussions/40145
